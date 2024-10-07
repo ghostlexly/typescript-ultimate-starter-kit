@@ -1,0 +1,169 @@
+"use client";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogClose,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import GhostCombobox from "@/components/ui/inputs/ghost-combobox/ghost-combobox";
+import LazyButton from "@/components/ui/lazy-button";
+import { handleApiErrors } from "@/lib/handle-api-errors";
+import { wolfios } from "@/lib/wolfios";
+import { useMutation } from "@tanstack/react-query";
+import { CopyIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+
+type FormValues = {
+  propertyId: string;
+  subscriberId: string;
+};
+
+const GenerateViewLinkDialog = ({ propertyId, isOpen, setIsOpen }) => {
+  const form = useForm<FormValues>();
+  const [shortLinkUrl, setShortLinkUrl] = useState<string | null>(null);
+  const subscriberIdWatch = form.watch("subscriberId");
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (values: FormValues) => {
+      return await wolfios
+        .post(`/api/customer/properties/${propertyId}/view-link`, {
+          data: {
+            ...values,
+          },
+        })
+        .then(async (res) => await res.json());
+    },
+
+    onError: (err) => {
+      handleApiErrors({ err, form });
+    },
+
+    onSuccess: (data) => {
+      setShortLinkUrl(data.shortLinkUrl);
+      toast.success("Lien de visualisation généré avec succès.");
+    },
+  });
+
+  const querySubscribers = async (inputValue: string) => {
+    const data = await wolfios
+      .get("/api/customer/subscribers", {
+        params: {
+          fullName: inputValue,
+        },
+      })
+      .then(async (res) => await res.json());
+
+    return data.nodes;
+  };
+
+  // -- reset short link url when subscriberId changes
+  useEffect(() => {
+    setShortLinkUrl(null);
+  }, [subscriberIdWatch, isOpen]);
+
+  return (
+    <>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Génération d'un lien de visualisation</DialogTitle>
+            <DialogDescription>
+              Génération d'un lien de visualisation pour le bien et le contact
+              sélectionnés.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={form.handleSubmit(async (values: FormValues) => {
+              try {
+                await mutateAsync(values);
+              } catch (err) {
+                handleApiErrors({ err });
+              }
+            })}
+          >
+            <div className="flex flex-col gap-4">
+              <Controller
+                name="subscriberId"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <GhostCombobox
+                    {...field}
+                    label="Contact"
+                    errorMessage={fieldState.error?.message}
+                    isSearchable
+                    isClearable
+                    loadOptions={querySubscribers}
+                    getOptionLabel={(option) =>
+                      `${option?.firstName} ${option?.lastName}`
+                    }
+                    getOptionValue={(option) => option?.id}
+                    onChange={(option) => {
+                      if (option) {
+                        field.onChange(option.id);
+                      } else {
+                        field.onChange("");
+                      }
+                    }}
+                  />
+                )}
+              />
+
+              {shortLinkUrl && (
+                <div className="flex flex-col gap-2">
+                  <div className="text-sm text-gray-500">
+                    Lien de visualisation
+                  </div>
+                  <div className="relative text-sm font-medium">
+                    <input
+                      type="text"
+                      value={shortLinkUrl}
+                      className="w-full rounded-md bg-gray-100 p-2 pr-10"
+                      readOnly
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      onClick={() => {
+                        navigator.clipboard.writeText(shortLinkUrl);
+                        toast.success("Lien copié dans le presse-papiers.");
+                      }}
+                    >
+                      <CopyIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter className="mt-6">
+              <div className="flex justify-end gap-3">
+                <DialogClose asChild>
+                  <LazyButton variant={"secondary"}>
+                    <div className="px-4 py-2">Fermer</div>
+                  </LazyButton>
+                </DialogClose>
+
+                <LazyButton
+                  type="submit"
+                  variant={"primary"}
+                  isLoading={form.formState.isSubmitting}
+                >
+                  <div className="px-4 py-2">Valider</div>
+                </LazyButton>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
+export { GenerateViewLinkDialog };
