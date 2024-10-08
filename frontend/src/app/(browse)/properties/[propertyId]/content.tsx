@@ -1,33 +1,26 @@
 "use client";
 
+import { Card, CardContent } from "@/components/ui/card";
 import Container from "@/components/ui/container";
-import { GhostImage } from "@/components/ui/ghost-image";
 import LoadingDots from "@/components/ui/loading-dots";
-import { OpenWhatsAppButton } from "@/components/ui/project/open-whatsapp";
 import { QueryErrorMessage } from "@/components/ui/query-error-message";
-import { s3 } from "@/lib/s3";
 import { wolfios } from "@/lib/wolfios";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "next/navigation";
-import { Details } from "./details";
-import { KeyFigures } from "./key-figures";
-import { RequestPhoneDialog } from "./request-phone-dialog";
 import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { CallToAction } from "./call-to-action";
-import { Documents } from "./documents";
-import { PhotosCard } from "./photos";
-import { ImagesCarouselDialog } from "./images-carousel-dialog";
 import { AccessReservedCard } from "./access-reserved";
-import { Badge } from "@/components/ui/badge";
+import { CallToAction } from "./call-to-action";
+import { Details } from "./details";
+import { Documents } from "./documents";
+import { ImagesCarouselDialog } from "./images-carousel-dialog";
+import { KeyFigures } from "./key-figures";
+import { PhotosCard } from "./photos";
 import { PropertyStatusBadge } from "./property-status-badge";
 
 const Content = () => {
   const { propertyId } = useParams();
   const searchParams = useSearchParams();
   const customerId = searchParams.get("customerId");
-  const subscriberId = searchParams.get("subscriberId");
   const [isPhoneUnlockDialogOpen, setIsPhoneUnlockDialogOpen] = useState(true);
   const [isImagesCarouselDialogOpen, setIsImagesCarouselDialogOpen] =
     useState(false);
@@ -39,14 +32,12 @@ const Content = () => {
   });
 
   const property = useQuery({
-    queryKey: ["properties", propertyId, "custom"],
+    queryKey: ["properties", propertyId],
     queryFn: () =>
       wolfios
-        .get(`/api/properties/${propertyId}/custom`, {
-          params: { subscriberId: subscriberId ?? "" },
-        })
+        .get(`/api/properties/${propertyId}`)
         .then(async (res) => await res.json()),
-    enabled: !!subscriberId,
+    enabled: !!propertyId,
   });
 
   const customer = useQuery({
@@ -61,7 +52,6 @@ const Content = () => {
   if (subscriber === null) {
     return (
       <AccessReservedCard
-        subscriberId={subscriberId}
         setSubscriber={setSubscriber}
         isPhoneUnlockDialogOpen={isPhoneUnlockDialogOpen}
         setIsPhoneUnlockDialogOpen={setIsPhoneUnlockDialogOpen}

@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const AccessReservedCard = ({
-  subscriberId,
   setSubscriber,
   isPhoneUnlockDialogOpen,
   setIsPhoneUnlockDialogOpen,
@@ -26,7 +25,6 @@ const AccessReservedCard = ({
         <LoadingSpinner className="h-6 w-6" />
       </div>
       <RequestPhoneDialog
-        subscriberId={subscriberId}
         setSubscriber={setSubscriber}
         isOpen={isPhoneUnlockDialogOpen}
         setIsOpen={setIsPhoneUnlockDialogOpen}

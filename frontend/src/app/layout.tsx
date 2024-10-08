@@ -55,7 +55,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
       <body
         className={cn(
-          "bg-background font-visbycfMedium text-foreground antialiased",
+          "bg-background font-aeonikPro text-foreground antialiased",
           visbycfMediumFont.variable,
           visbycfBoldFont.variable,
           aeonikProFont.variable,

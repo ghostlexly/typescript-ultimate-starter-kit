@@ -8,8 +8,8 @@ const QueryErrorMessage = () => {
         <p>Something went wrong. Please try again.</p>
         <p>
           If the problem persists, please contact support at{" "}
-          <a className="font-bold" href="mailto:hello@terra-capital.fr">
-            hello@terra-capital.fr
+          <a className="font-bold" href="mailto:hello@fenriss.com">
+            hello@fenriss.com
           </a>
         </p>
       </div>

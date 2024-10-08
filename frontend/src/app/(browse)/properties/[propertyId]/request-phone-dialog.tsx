@@ -19,12 +19,7 @@ type FormValues = {
   phone: string;
 };
 
-const RequestPhoneDialog = ({
-  subscriberId,
-  setSubscriber,
-  isOpen,
-  setIsOpen,
-}) => {
+const RequestPhoneDialog = ({ setSubscriber, isOpen, setIsOpen }) => {
   const form = useForm({
     values: {
       phone: "",
@@ -34,7 +29,7 @@ const RequestPhoneDialog = ({
   const { mutateAsync } = useMutation({
     mutationFn: async (data: FormValues) => {
       return await wolfios
-        .post(`/api/subscribers/${subscriberId}/phone-unlock`, {
+        .post(`/api/subscribers/phone-unlock`, {
           data: {
             phone: data.phone,
           },

@@ -2,34 +2,32 @@
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogClose,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { GhostCombobox } from "@/components/ui/inputs/ghost-combobox";
 import LazyButton from "@/components/ui/lazy-button";
+import LoadingDots from "@/components/ui/loading-dots";
 import { handleApiErrors } from "@/lib/handle-api-errors";
 import { wolfios } from "@/lib/wolfios";
 import { useMutation } from "@tanstack/react-query";
 import { CopyIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 type FormValues = {
   propertyId: string;
-  subscriberId: string;
 };
 
 const GenerateViewLinkDialog = ({ propertyId, isOpen, setIsOpen }) => {
   const form = useForm<FormValues>();
   const [shortLinkUrl, setShortLinkUrl] = useState<string | null>(null);
-  const subscriberIdWatch = form.watch("subscriberId");
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: async (values: FormValues) => {
       return await wolfios
         .post(`/api/customer/properties/${propertyId}/view-link`, {
@@ -46,26 +44,17 @@ const GenerateViewLinkDialog = ({ propertyId, isOpen, setIsOpen }) => {
 
     onSuccess: (data) => {
       setShortLinkUrl(data.shortLinkUrl);
-      toast.success("Lien de visualisation généré avec succès.");
     },
   });
 
-  const querySubscribers = async (inputValue: string) => {
-    const data = await wolfios
-      .get("/api/customer/subscribers", {
-        params: {
-          fullName: inputValue,
-        },
-      })
-      .then(async (res) => await res.json());
-
-    return data.nodes;
-  };
-
-  // -- reset short link url when subscriberId changes
+  // -- reset short link url when dialog is closed
   useEffect(() => {
-    setShortLinkUrl(null);
-  }, [subscriberIdWatch, isOpen]);
+    if (isOpen && propertyId) {
+      mutateAsync({ propertyId });
+    } else {
+      setShortLinkUrl(null);
+    }
+  }, [isOpen, mutateAsync, propertyId]);
 
   return (
     <>
@@ -89,31 +78,11 @@ const GenerateViewLinkDialog = ({ propertyId, isOpen, setIsOpen }) => {
             })}
           >
             <div className="flex flex-col gap-4">
-              <Controller
-                name="subscriberId"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <GhostCombobox
-                    {...field}
-                    label="Contact"
-                    errorMessage={fieldState.error?.message}
-                    isSearchable
-                    isClearable
-                    loadOptions={querySubscribers}
-                    getOptionLabel={(option) =>
-                      `${option?.firstName} ${option?.lastName}`
-                    }
-                    getOptionValue={(option) => option?.id}
-                    onChange={(option) => {
-                      if (option) {
-                        field.onChange(option.id);
-                      } else {
-                        field.onChange("");
-                      }
-                    }}
-                  />
-                )}
-              />
+              {isPending && (
+                <div className="flex justify-center">
+                  <LoadingDots />
+                </div>
+              )}
 
               {shortLinkUrl && (
                 <div className="flex flex-col gap-2">
@@ -149,14 +118,6 @@ const GenerateViewLinkDialog = ({ propertyId, isOpen, setIsOpen }) => {
                     <div className="px-4 py-2">Fermer</div>
                   </LazyButton>
                 </DialogClose>
-
-                <LazyButton
-                  type="submit"
-                  variant={"primary"}
-                  isLoading={form.formState.isSubmitting}
-                >
-                  <div className="px-4 py-2">Valider</div>
-                </LazyButton>
               </div>
             </DialogFooter>
           </form>

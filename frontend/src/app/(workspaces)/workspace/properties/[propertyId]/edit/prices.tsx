@@ -42,7 +42,7 @@ const PricesCard = ({ form }: { form: UseFormReturn<FormValues> }) => {
               <GhostInput
                 {...field}
                 label="Charges de copropriété"
-                rightSection={<div>€/an</div>}
+                rightSection={<div>€/mois</div>}
                 errorMessage={fieldState.error?.message}
               />
             )}
