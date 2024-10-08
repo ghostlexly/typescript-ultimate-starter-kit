@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  columnHelper,
-  GhostTable,
-} from "@/components/ui/ghost-table/ghost-table";
+import { columnHelper, GhostTable } from "@/components/ui/ghost-table";
 import { wolfios } from "@/lib/wolfios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";

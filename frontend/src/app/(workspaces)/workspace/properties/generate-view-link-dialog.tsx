@@ -9,7 +9,7 @@ import {
   DialogClose,
   DialogFooter,
 } from "@/components/ui/dialog";
-import GhostCombobox from "@/components/ui/inputs/ghost-combobox/ghost-combobox";
+import { GhostCombobox } from "@/components/ui/inputs/ghost-combobox";
 import LazyButton from "@/components/ui/lazy-button";
 import { handleApiErrors } from "@/lib/handle-api-errors";
 import { wolfios } from "@/lib/wolfios";

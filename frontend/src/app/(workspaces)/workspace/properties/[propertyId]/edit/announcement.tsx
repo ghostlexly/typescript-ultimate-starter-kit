@@ -9,7 +9,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import { FormValues } from "./page";
 import { GhostInput } from "@/components/ui/inputs/ghost-input";
 import { Textarea } from "@/components/ui/textarea";
-import GhostCombobox from "@/components/ui/inputs/ghost-combobox/ghost-combobox";
+import { GhostCombobox } from "@/components/ui/inputs/ghost-combobox";
 
 const AnnouncementCard = ({
   property,

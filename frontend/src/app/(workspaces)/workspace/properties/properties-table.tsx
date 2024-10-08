@@ -1,10 +1,7 @@
 "use client";
 
 import { GhostImage } from "@/components/ui/ghost-image";
-import {
-  columnHelper,
-  GhostTable,
-} from "@/components/ui/ghost-table/ghost-table";
+import { columnHelper, GhostTable } from "@/components/ui/ghost-table";
 import { s3 } from "@/lib/s3";
 import { wolfios } from "@/lib/wolfios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

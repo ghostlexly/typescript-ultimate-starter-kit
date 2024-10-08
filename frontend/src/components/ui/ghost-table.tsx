@@ -30,10 +30,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import LoadingDots from "../loading-dots";
-import { Popover, PopoverContent, PopoverTrigger } from "../popover";
-import GhostCombobox from "../inputs/ghost-combobox/ghost-combobox";
-import Pagination from "../pagination";
+import LoadingDots from "@/components/ui/loading-dots";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { GhostCombobox } from "@/components/ui/inputs/ghost-combobox";
+import Pagination from "@/components/ui/pagination";
 
 type GhostTableProps = {
   data: Array<any>;

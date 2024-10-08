@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import GhostCombobox from "@/components/ui/inputs/ghost-combobox/ghost-combobox";
+import { GhostCombobox } from "@/components/ui/inputs/ghost-combobox";
 import LazyButton from "@/components/ui/lazy-button";
 import { Textarea } from "@/components/ui/textarea";
 import { handleApiErrors } from "@/lib/handle-api-errors";

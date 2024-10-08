@@ -9,8 +9,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../../command";
-import { Popover, PopoverContent, PopoverTrigger } from "../../popover";
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type GhostComboboxProps = {
   label: string;
@@ -339,4 +343,4 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
 );
 GhostCombobox.displayName = "GhostCombobox";
 
-export default GhostCombobox;
+export { GhostCombobox };

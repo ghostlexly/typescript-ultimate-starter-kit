@@ -8,10 +8,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  columnHelper,
-  GhostTable,
-} from "@/components/ui/ghost-table/ghost-table";
+import { columnHelper, GhostTable } from "@/components/ui/ghost-table";
 import LazyButton from "@/components/ui/lazy-button";
 import LoadingDots from "@/components/ui/loading-dots";
 import { QueryErrorMessage } from "@/components/ui/query-error-message";

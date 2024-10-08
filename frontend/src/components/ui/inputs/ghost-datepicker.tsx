@@ -2,9 +2,13 @@ import { dateFns } from "@/lib/date-fns";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
 import { ComponentProps, Dispatch, SetStateAction, useState } from "react";
-import { Button } from "../../button";
-import { Calendar } from "../../calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../../popover";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export type GhostDatePickerProps = {
   date: Date | undefined;
