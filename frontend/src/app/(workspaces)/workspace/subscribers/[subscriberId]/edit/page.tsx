@@ -2,7 +2,7 @@
 
 import Container from "@/components/ui/container";
 import LazyButton from "@/components/ui/lazy-button";
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 import { QueryErrorMessage } from "@/components/ui/query-error-message";
 import { handleApiErrors } from "@/lib/handle-api-errors";
 import { wolfios } from "@/lib/wolfios";

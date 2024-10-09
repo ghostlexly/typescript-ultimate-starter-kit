@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { GhostImage } from "@/components/ui/ghost-image";
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 import TerraCapitalLogo from "@/assets/images/terracapital.png";
 import { useSession } from "@/lib/ghostlexly-auth/ghostlexly-auth.provider";
 import { ModelLogo } from "@/lib/model-logo";

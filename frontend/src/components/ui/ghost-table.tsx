@@ -30,7 +30,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 import {
   Popover,
   PopoverContent,

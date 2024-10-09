@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import LazyButton from "@/components/ui/lazy-button";
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 import { handleApiErrors } from "@/lib/handle-api-errors";
 import { wolfios } from "@/lib/wolfios";
 import { useMutation } from "@tanstack/react-query";

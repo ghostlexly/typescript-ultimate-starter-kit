@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import Container from "@/components/ui/container";
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 import { QueryErrorMessage } from "@/components/ui/query-error-message";
 import { wolfios } from "@/lib/wolfios";
 import { useQuery } from "@tanstack/react-query";

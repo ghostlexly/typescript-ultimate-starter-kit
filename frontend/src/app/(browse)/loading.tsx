@@ -1,4 +1,4 @@
-import LoadingDots from "@/components/ui/loading-dots";
+import { LoadingDots } from "@/components/ui/loading-dots";
 
 const Loading = () => {
   return (
