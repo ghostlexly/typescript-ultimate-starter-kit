@@ -31,7 +31,6 @@ type GhostComboboxProps = {
   getOptionLabel?: (option: any) => string;
   getOptionValue?: (option: any) => string;
   loadOptions?: (inputValue: string) => any;
-  defaultValue?: () => any;
   errorMessage?: string;
   commandEmptyMessage?: string;
 };
@@ -49,7 +48,6 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
       getOptionLabel = (option) => option?.label,
       getOptionValue = (option) => option?.value,
       loadOptions,
-      defaultValue,
       errorMessage,
       commandEmptyMessage,
       ...props
@@ -94,12 +92,7 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
     if (loadOptions === undefined) {
       loadOptions = async (inputValue: string) => {
         const results = options.filter((option: any) => {
-          const label = getOptionLabel(option);
           const value = getOptionValue(option);
-
-          if (label?.toLowerCase().includes(inputValue.toLowerCase())) {
-            return option;
-          }
 
           if (value?.toLowerCase().includes(inputValue.toLowerCase())) {
             return option;
@@ -124,18 +117,6 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
       },
       200
     );
-
-    // ----------------------------------------
-    // filter to get the default value on first render
-    // if a value (string) prop is provided
-    // ----------------------------------------
-    if (defaultValue === undefined) {
-      defaultValue = () => {
-        return options.find(
-          (item) => String(getOptionValue(item)) === String(value)
-        );
-      };
-    }
 
     // ----------------------------------------
     // clear the value
