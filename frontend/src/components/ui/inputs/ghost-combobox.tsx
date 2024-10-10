@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { Check, ChevronsUpDown, X } from "lucide-react";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import {
   Command,
   CommandEmpty,
@@ -31,6 +31,7 @@ type GhostComboboxProps = {
   getOptionLabel?: (option: any) => string;
   getOptionValue?: (option: any) => string;
   loadOptions?: (inputValue: string) => any;
+  loadDefaultOption?: () => any;
   errorMessage?: string;
   commandEmptyMessage?: string;
 };
@@ -48,6 +49,7 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
       getOptionLabel = (option) => option?.label,
       getOptionValue = (option) => option?.value,
       loadOptions,
+      loadDefaultOption,
       errorMessage,
       commandEmptyMessage,
       ...props
@@ -57,6 +59,7 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
     const [canAnimate, setCanAnimate] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [hasLoadedOnMount, setHasLoadedOnMount] = useState(false);
+    const [hasLoadedDefaultOption, setHasLoadedDefaultOption] = useState(false);
     const [open, setOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<any | null>(null);
     const [internalOptions, setInternalOptions] = useState(options);
@@ -92,10 +95,18 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
     if (loadOptions === undefined) {
       loadOptions = async (inputValue: string) => {
         const results = options.filter((option: any) => {
+          const label = getOptionLabel(option);
           const value = getOptionValue(option);
 
           if (value?.toLowerCase().includes(inputValue.toLowerCase())) {
             return option;
+          }
+
+          // -- if the default options are already loaded (because we need to search only by value received from the form first), we also check the label
+          if (hasLoadedDefaultOption) {
+            if (label?.toLowerCase().includes(inputValue.toLowerCase())) {
+              return option;
+            }
           }
 
           return null;
@@ -136,11 +147,15 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
     // load the options by default to display the first options instead of an empty list
     // ----------------------------------------
     useEffect(() => {
-      if (hasLoadedOnMount === false) {
+      if (
+        hasLoadedOnMount === false &&
+        value === "" &&
+        selectedOption === null
+      ) {
         debouncedLoadOptions("");
         setHasLoadedOnMount(true);
       }
-    }, [debouncedLoadOptions, hasLoadedOnMount]);
+    }, [debouncedLoadOptions, hasLoadedOnMount, value, selectedOption]);
 
     // ----------------------------------------
     // select the default value from the options array on mount
@@ -148,19 +163,42 @@ const GhostCombobox = forwardRef<HTMLInputElement, GhostComboboxProps>(
     // if a value (string) prop is provided
     // and the selectedOption is null (it's the default state of the component on mount)
     // ----------------------------------------
-    useEffect(() => {
-      const loadDefaultOption = async () => {
-        if (value && selectedOption === null) {
-          const search = await loadOptions(value);
+    const defaultLoadDefaultOption = useCallback(async () => {
+      if (value && selectedOption === null) {
+        return await loadOptions(value);
+      }
 
-          if (search.length > 0) {
-            setSelectedOption(search[0]);
+      return [];
+    }, [value, selectedOption, loadOptions]);
+
+    useEffect(() => {
+      const load = async () => {
+        if (!hasLoadedDefaultOption) {
+          let results: any[] = [];
+
+          if (loadDefaultOption !== undefined) {
+            results = await loadDefaultOption();
+          } else {
+            results = await defaultLoadDefaultOption();
           }
+
+          if (results.length > 0) {
+            setSelectedOption(results[0]);
+          }
+
+          setHasLoadedDefaultOption(true);
         }
       };
 
-      loadDefaultOption();
-    }, [value, selectedOption, loadOptions]);
+      load();
+    }, [
+      value,
+      selectedOption,
+      loadOptions,
+      loadDefaultOption,
+      defaultLoadDefaultOption,
+      hasLoadedDefaultOption,
+    ]);
 
     // ----------------------------------------
     // transmit the selected option to the form
