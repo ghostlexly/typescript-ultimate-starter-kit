@@ -1,5 +1,5 @@
 # -- BUILDER
-FROM node:22.3.0-bullseye-slim as builder
+FROM node:22.9.0-bullseye-slim as builder
 WORKDIR /usr/src/app
 ENV NODE_ENV=development
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
@@ -12,7 +12,7 @@ RUN yarn install
 RUN yarn build
 
 # -- RUNNER
-FROM node:22.3.0-bullseye-slim AS base
+FROM node:22.9.0-bullseye-slim AS base
 WORKDIR /usr/src/app
 ENV NODE_ENV=production
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
